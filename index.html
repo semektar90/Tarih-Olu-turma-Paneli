@@ -84,6 +84,17 @@
             margin-top: 20px;
             font-style: italic;
         }
+
+        /* --- MOBİL UYUMLULUK EKLEMESİ --- */
+        @media (max-width: 480px) {
+            .result-value {
+                font-size: 13px; /* Yazı boyutunu 18px'den 13px'e düşürdük */
+                padding: 8px;    /* Kutu içi boşluğu mobilde daralttık */
+            }
+            .container {
+                padding: 15px;   /* Ana kutuyu da mobilde biraz daraltarak ekrana sığdırıyoruz */
+            }
+        }
     </style>
 </head>
 <body>
@@ -131,7 +142,6 @@
         </select>
     </div>
 
-    <!-- Giriş Kutuları Başlangıçta Boş -->
     <div class="form-row">
         <div class="form-group">
             <label for="hatKodu">Hat ve Makine (Örn: 15.1):</label>
@@ -204,11 +214,9 @@
         const currentHour = pad(currentSystemTime.getHours());
         const currentMinute = pad(currentSystemTime.getMinutes());
 
-        // Kullanıcı girdilerini al (Boşsa boş kalır, varsayılan değer atanmaz)
         const hatKodu = hatKoduInput.value.trim();
         const opKodu = opKoduInput.value.trim();
 
-        // Dinamik çıktı eki kurgusu
         let suffix = ` L${dayOfYear} ${currentHour}:${currentMinute}`;
         if (hatKodu !== "") {
             suffix += ` ${hatKodu}`;
