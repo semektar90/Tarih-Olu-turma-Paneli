@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarih Kontrolü</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f1c40f;
+            padding-bottom: 10px;
+        }
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            flex: 1;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+        select, input[type="date"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        select:focus, input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #fcfcfc;
+            border-left: 5px solid #2ecc71;
+            border-radius: 4px;
+        }
+        .result-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+        }
+        .result-value {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #2c3e50;
+            background: #eaeded;
+            padding: 10px;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .footer-credits {
+            text-align: right;
+            font-size: 11px;
+            color: #95a5a6;
+            margin-top: 20px;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>SKT Hesaplama Ve Tarih Formatları</h2>
+    
+    <div class="form-group">
+        <label for="prodDate">Üretim Tarihi:</label>
+        <input type="date" id="prodDate">
+    </div>
+
+    <div class="form-group">
+        <label for="formatSelect">Tarih Formatı Seçin:</label>
+        <select id="formatSelect">
+            <option value="BB">BB.: (Tavsiye Edilen Tüketim Tarihi - Ay/Gün/Yıl)</option>
+            <option value="BB_MA">BB/MA: (Tavsiye Edilen Tüketim Tarihi - Yıl/Ay/Gün) [Özel Ay Kısaltmalı]</option>
+            <option value="BEST_B_Dmy">BEST B.: (Tavsiye Edilen Tüketim Tarihi - Gün/Ay/Yıl)</option>
+            <option value="BEST_B_mdy">BEST B.: (Tavsiye Edilen Tüketim Tarihi - Ay/Gün/Yıl)</option>
+            <option value="BEST_IF_USED">BEST IF USED BY.: (Tavsiye Edilen Tüketim Tarihi - Ay/Gün/Yıl)</option>
+            <option value="PROD_BEST">PROD. D.: (Üretim) & BEST B.: (Tavsiye Edilen) - Gün/Ay/Yıl</option>
+            <option value="PROD_USEBY">PROD. D.: (Üretim) & USE BY D.: (Son Tüketim) - Gün/Ay/Yıl</option>
+            <option value="STT">STT: (Son Tüketim Tarihi - Gün/Ay/Yıl)</option>
+            <option value="TETT">TETT: (Tavsiye Edilen Tüketim Tarihi - Gün/Ay/Yıl)</option>
+            <option value="USE_BY">USE BY D.: (Son Tüketim Tarihi- Gün/Ay/Yıl)</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="sktDays">Raf Ömrü (SKT Süresi):</label>
+        <select id="sktDays">
+            <option value="30">30 Gün</option>
+            <option value="60">60 Gün</option>
+            <option value="90">90 Gün</option>
+            <option value="120">120 Gün</option>
+            <option value="150">150 Gün</option>
+            <option value="180">180 Gün</option>
+            <option value="210">210 Gün</option>
+            <option value="240">240 Gün</option>
+            <option value="270">270 Gün</option>
+            <option value="300">300 Gün</option>
+            <option value="330">330 Gün</option>
+            <option value="360" selected>360 Gün</option>
+            <option value="720">720 Gün</option>
+        </select>
+    </div>
+
+    <!-- Giriş Kutuları Başlangıçta Boş -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="hatKodu">Hat ve Makine (Örn: 15.1):</label>
+            <input type="text" id="hatKodu" value="">
+        </div>
+        <div class="form-group">
+            <label for="opKodu">Fabrika Kısaltması (Örn: BSK):</label>
+            <input type="text" id="opKodu" value="">
+        </div>
+    </div>
+
+    <div class="result-box">
+        <div class="result-title">Oluşturulan Format Çıktısı:</div>
+        <div class="result-value" id="output">Seçimleri yapınız...</div>
+    </div>
+
+    <div class="footer-credits">designed by Serhat Emektar</div>
+</div>
+
+<script>
+    const shortMonths = {
+        0: 'JA', 1: 'FE', 2: 'MR', 3: 'AL', 4: 'MA', 5: 'JN',
+        6: 'JL', 7: 'AU', 8: 'SE', 9: 'OC', 10: 'NO', 11: 'DE'
+    };
+
+    const prodDateInput = document.getElementById('prodDate');
+    const formatSelect = document.getElementById('formatSelect');
+    const sktDaysSelect = document.getElementById('sktDays');
+    const hatKoduInput = document.getElementById('hatKodu');
+    const opKoduInput = document.getElementById('opKodu');
+    const outputDiv = document.getElementById('output');
+
+    const today = new Date();
+    prodDateInput.value = today.toISOString().split('T')[0];
+
+    function pad(num) {
+        return num.toString().padStart(2, '0');
+    }
+
+    function getDayOfYear(date) {
+        const start = new Date(date.getFullYear(), 0, 0);
+        const diff = date - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        return Math.floor(diff / oneDay);
+    }
+
+    function hesapla() {
+        const baseDate = new Date(prodDateInput.value);
+        if (isNaN(baseDate.getTime())) {
+            outputDiv.innerText = "Lütfen geçerli bir üretim tarihi seçin.";
+            return;
+        }
+
+        const daysToAdd = parseInt(sktDaysSelect.value);
+        
+        const sktDate = new Date(baseDate);
+        sktDate.setDate(sktDate.getDate() + daysToAdd);
+
+        const pDayStr = pad(baseDate.getDate());
+        const pMonth = pad(baseDate.getMonth() + 1);
+        const pYear = baseDate.getFullYear();
+
+        const dayOfYear = getDayOfYear(baseDate);
+
+        const sDay = pad(sktDate.getDate());
+        const sMonth = pad(sktDate.getMonth() + 1);
+        const sYear = sktDate.getFullYear();
+
+        const currentSystemTime = new Date();
+        const currentHour = pad(currentSystemTime.getHours());
+        const currentMinute = pad(currentSystemTime.getMinutes());
+
+        // Kullanıcı girdilerini al (Boşsa boş kalır, varsayılan değer atanmaz)
+        const hatKodu = hatKoduInput.value.trim();
+        const opKodu = opKoduInput.value.trim();
+
+        // Dinamik çıktı eki kurgusu
+        let suffix = ` L${dayOfYear} ${currentHour}:${currentMinute}`;
+        if (hatKodu !== "") {
+            suffix += ` ${hatKodu}`;
+        }
+        if (opKodu !== "") {
+            suffix += ` ${opKodu}`;
+        }
+
+        const selectedFormat = formatSelect.value;
+        let result = "";
+
+        switch(selectedFormat) {
+            case "BB":
+                result = `BB.: ${sMonth}/${sDay}/${sYear}${suffix}`;
+                break;
+            case "BB_MA":
+                const maMonth = shortMonths[sktDate.getMonth()];
+                result = `BB/MA: ${sYear}/${maMonth}/${sDay}${suffix}`;
+                break;
+            case "BEST_B_Dmy":
+                result = `BEST B.: ${sDay}/${sMonth}/${sYear}${suffix}`;
+                break;
+            case "BEST_B_mdy":
+                result = `BEST B.: ${sMonth}/${sDay}/${sYear}${suffix}`;
+                break;
+            case "BEST_IF_USED":
+                result = `BEST IF USED BY.: ${sMonth}/${sDay}/${sYear}${suffix}`;
+                break;
+            case "PROD_BEST":
+                result = `PROD. D.: ${pDayStr}/${pMonth}/${pYear}\nBEST B.: ${sDay}/${sMonth}/${sYear}${suffix}`;
+                break;
+            case "PROD_USEBY":
+                result = `PROD. D.: ${pDayStr}/${pMonth}/${pYear}\nUSED BY D.: ${sDay}/${sMonth}/${sYear}${suffix}`;
+                break;
+            case "STT":
+                result = `STT: ${sDay}/${sMonth}/${sYear}${suffix}`;
+                break;
+            case "TETT":
+                result = `TETT: ${sDay}/${sMonth}/${sYear}${suffix}`;
+                break;
+            case "USE_BY":
+                result = `USE BY D.: ${sDay}/${sMonth}/${sYear}${suffix}`;
+                break;
+        }
+
+        outputDiv.innerHTML = result.replace(/\n/g, '<br>');
+    }
+
+    prodDateInput.addEventListener('change', hesapla);
+    formatSelect.addEventListener('change', hesapla);
+    sktDaysSelect.addEventListener('change', hesapla);
+    hatKoduInput.addEventListener('input', hesapla);
+    opKoduInput.addEventListener('input', hesapla);
+
+    setInterval(hesapla, 1000);
+    hesapla();
+</script>
+
+</body>
+</html>
